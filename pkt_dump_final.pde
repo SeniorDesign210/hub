@@ -11,6 +11,7 @@ PrintWriter g_output;
 PrintWriter a_output;
 PrintWriter m_output;
 PrintWriter r_output;
+PrintWriter h_output;
 
 void setup(){
   size(200,200,P3D);
@@ -27,6 +28,7 @@ void setup(){
   a_output = createWriter("a_data-"+timeString);
   m_output = createWriter("m_data-"+timeString);
   r_output = createWriter("r_data-"+timeString);
+  h_output = createWriter("h_data-"+timeString);
   g_output.println("x,y,z");
   a_output.println("x,y,z");
   m_output.println("x,y,z");
@@ -116,8 +118,16 @@ void processFrame(int[] frame){
   if(data[0]=='R'){
     //R for respiratory signal
     int r = get2bytesInt(data,1);
-    println(r);
+    //println(r);
     r_output.println(r);
+  }
+  if(data[0]=='H'){
+    //H for Heart Rate
+    float h = get4bytesFloat(data,1);
+    if(h>-1){
+      println("HR:",h);
+      h_output.println(h);
+    }
   }
 }
 void serialEvent(Serial xbee) {
@@ -146,5 +156,7 @@ void keyPressed() {
   m_output.close(); // Finishes the file
   r_output.flush();
   r_output.close();
+  h_output.flush();
+  h_output.close();
   exit(); // Stops the program
 }
